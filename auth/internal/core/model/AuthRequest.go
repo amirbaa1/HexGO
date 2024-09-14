@@ -3,8 +3,8 @@ package model
 import "errors"
 
 type AuthRequest struct {
-	Email                string `json:"email"`
-	Password             string `json:"password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (a *AuthRequest) Validate() error {

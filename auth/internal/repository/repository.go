@@ -9,7 +9,6 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
-
 var _ ports.UserRepository = (*UserRepository)(nil)
 
 func NewRepository(db *gorm.DB) *UserRepository {
