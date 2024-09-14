@@ -1,6 +1,6 @@
 package ports
 
-import "HexGO/internal/core/model"
+import "auth/internal/core/model"
 
 type UserService interface {
 	Register(register *model.RegisterRequest) error

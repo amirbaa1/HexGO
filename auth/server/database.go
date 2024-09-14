@@ -1,7 +1,7 @@
 package server
 
 import (
-	"HexGO/internal/core/model"
+	"auth/internal/core/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

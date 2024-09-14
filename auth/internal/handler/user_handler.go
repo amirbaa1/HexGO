@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"HexGO/internal/core/model"
+	"auth/internal/core/model"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"HexGO/internal/core/model"
-	"HexGO/internal/helper"
+	"auth/internal/core/model"
+	"auth/internal/helper"
 	"errors"
 	"github.com/google/uuid"
 	"strings"
@@ -22,6 +22,11 @@ func (s *UserService) Register(register *model.RegisterRequest) error {
 	}
 
 	var err error
+	existingUser, err := s.userRepository.FindByEmail(register.Email)
+	if err == nil && existingUser != nil {
+		return errors.New("user already exists")
+	}
+
 	hashPass, err := helper.HashPassword(register.Password)
 	if err != nil {
 		return err
@@ -48,7 +53,7 @@ func (s *UserService) Login(login *model.AuthRequest) (model.AuthResponse, error
 		return model.AuthResponse{}, err
 	}
 
-	user, err := s.userRepository.Login(login)
+	user, err := s.userRepository.FindByEmail(login.Email)
 	if err != nil {
 		return model.AuthResponse{}, err
 	}

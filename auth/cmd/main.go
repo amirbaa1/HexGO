@@ -1,10 +1,10 @@
 package main
 
 import (
-	"HexGO/internal/handler"
-	"HexGO/internal/repository"
-	"HexGO/internal/service"
-	"HexGO/server"
+	"auth/internal/handler"
+	"auth/internal/repository"
+	"auth/internal/service"
+	"auth/server"
 )
 
 func main() {

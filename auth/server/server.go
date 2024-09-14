@@ -1,7 +1,7 @@
 package server
 
 import (
-	"HexGO/internal/core/ports"
+	"auth/internal/core/ports"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/logger"

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"HexGO/internal/core/ports"
+	"auth/internal/core/ports"
 )
 
 type UserService struct {

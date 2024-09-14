@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"HexGO/internal/core/ports"
+	"auth/internal/core/ports"
 	"gorm.io/gorm"
 )
 

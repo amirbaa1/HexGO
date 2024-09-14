@@ -1,6 +1,6 @@
 package handler
 
-import "HexGO/internal/core/ports"
+import "auth/internal/core/ports"
 
 type UserHandl struct {
 	app ports.UserService
