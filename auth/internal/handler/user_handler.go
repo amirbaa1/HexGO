@@ -3,6 +3,7 @@ package handler
 import (
 	"auth/internal/core/model"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func (h *UserHandl) Register(c *fiber.Ctx) error {
@@ -47,5 +48,21 @@ func (h *UserHandl) Login(c *fiber.Ctx) error {
 		"code":    fiber.StatusOK,
 		"message": "user logged in successfully",
 		"token":   token,
+	})
+}
+
+func (h *UserHandl) Profile(c *fiber.Ctx) error {
+	userId := c.Locals("user").(*jwt.Token)
+
+	profile, err := h.app.Profile(userId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"code": fiber.StatusInternalServerError,
+			"msg":  err.Error(),
+		})
+	}
+	return c.JSON(fiber.Map{
+		"code": fiber.StatusOK,
+		"data": profile,
 	})
 }

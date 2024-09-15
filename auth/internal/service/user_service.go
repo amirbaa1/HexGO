@@ -4,6 +4,7 @@ import (
 	"auth/internal/core/model"
 	"auth/internal/helper"
 	"errors"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"strings"
 	"time"
@@ -66,4 +67,21 @@ func (s *UserService) Login(login *model.AuthRequest) (model.AuthResponse, error
 	return model.AuthResponse{
 		token,
 	}, nil
+}
+
+func (s *UserService) Profile(token *jwt.Token) (model.ProfileResponse, error) {
+	claims := token.Claims.(jwt.MapClaims)
+	email := claims["email"].(string)
+
+	userGet, err := s.userRepository.FindByEmail(email)
+	if err != nil {
+		return model.ProfileResponse{}, err
+	}
+
+	user := &model.ProfileResponse{
+		Id:    userGet.Id,
+		Email: userGet.Email,
+		//Token: string(claims),
+	}
+	return *user, nil
 }
