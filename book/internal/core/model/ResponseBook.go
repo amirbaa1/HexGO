@@ -8,7 +8,8 @@ import (
 type ResponseBook struct {
 	Id        uuid.UUID `json:"id"`
 	Title     string    `json:"title"`
-	Author    string    `json:"author"`
+	AuthorId  uuid.UUID `json:"authorId"`
+	Author    Author    `json:"author"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }

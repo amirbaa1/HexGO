@@ -12,10 +12,12 @@ type BookHandler interface {
 
 type BookService interface {
 	CreateServiceBook(book *model.RequestBook) error
-	GetAllBooks(book *model.RequestBook) error
+	GetAllBooks() (*[]model.ResponseBook, error)
 }
 
 type BookRepository interface {
-	CreateBook(book *model.Book) (string, error)
-	GetAllBooks(book model.Book) ([]string, error) // model.Response ?
+	CreateBook(book *model.Book) error
+	GetAllBooks() ([]model.Book, error)
+	FindAuthorByFullNameForCreate(authorFirstName string, authorLastName string) (*model.Author, error)
+	CreateAuthor(author *model.Author) error
 }
