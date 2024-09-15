@@ -25,6 +25,8 @@ func (ser *Server) Internal() {
 	bookRoute := v1.Group("/book")
 	bookRoute.Get("/", ser.bookHandler.GetAllBooks)
 	bookRoute.Post("/AddBook", ser.bookHandler.CreateBook)
+	bookRoute.Put("/UpdateBook/:id", ser.bookHandler.UpdateBook)
+	bookRoute.Get("/book/:id", ser.bookHandler.GetBookById)
 
 	err := app.Listen(":3001")
 	if err != nil {

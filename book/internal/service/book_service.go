@@ -71,3 +71,52 @@ func (s *Service) GetAllBooks() (*[]model.ResponseBook, error) {
 
 	return &responseBooks, nil
 }
+
+func (s *Service) UpdateBook(book *model.RequestBookUpdate, bookId string) (*model.RequestBookUpdate, error) {
+
+	existingBook, err := s.bookRepository.GetBookById(bookId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if existingBook == nil {
+		return nil, errors.New("book not found")
+	}
+
+	existingBook.Title = book.Title
+	existingBook.UpdateTime = time.Now()
+
+	err = s.bookRepository.UpdateBook(existingBook)
+	if err != nil {
+		return nil, err
+	}
+
+	return book, nil
+}
+
+func (s *Service) GetBookById(bookId string) (*model.ResponseBook, error) {
+	book, err := s.bookRepository.GetBookById(bookId)
+	if err != nil {
+		return nil, err
+	}
+
+	if book == nil {
+		return nil, errors.New("book not found")
+	}
+
+	responseBook := &model.ResponseBook{
+		Id:       book.Id,
+		Title:    book.Title,
+		AuthorId: book.Author.Id,
+		Author: model.Author{
+			Id:        book.Author.Id,
+			FirstName: book.Author.FirstName,
+			LastName:  book.Author.LastName,
+		},
+		CreatedAt: book.CreateTime,
+		UpdatedAt: book.UpdateTime,
+	}
+
+	return responseBook, nil
+}

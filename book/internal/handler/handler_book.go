@@ -39,3 +39,65 @@ func (h *Handler) GetAllBooks(c *fiber.Ctx) error {
 		"data":   getAll,
 	})
 }
+
+func (h *Handler) UpdateBook(c *fiber.Ctx) error {
+	reqBook := new(model.RequestBookUpdate)
+	id := c.Params("id")
+
+	if err := c.BodyParser(reqBook); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":  err,
+			"status": fiber.StatusBadRequest,
+		})
+	}
+
+	result, err := h.service.UpdateBook(reqBook, id)
+	if err != nil {
+		if err.Error() == "book not found" {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error":  "Book not found",
+				"status": fiber.StatusNotFound,
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":  err.Error(),
+			"status": fiber.StatusInternalServerError,
+		})
+	}
+	//if result.Error != nil {
+	//	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+	//		"error":  result.Error,
+	//		"status": fiber.StatusBadRequest,
+	//	})
+	//}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  fiber.StatusOK,
+		"message": "Book updated",
+		"data":    result,
+	})
+
+}
+
+func (h *Handler) GetBookById(c *fiber.Ctx) error {
+	id := c.Params("id")
+	result, err := h.service.GetBookById(id)
+
+	if err != nil {
+		if err.Error() == "book not found" {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error":  "Book not found",
+				"status": fiber.StatusNotFound,
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":  err.Error(),
+			"status": fiber.StatusInternalServerError,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": fiber.StatusOK,
+		"data":   result,
+	})
+
+}

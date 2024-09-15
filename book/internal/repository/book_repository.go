@@ -47,3 +47,24 @@ func (r *Repository) FindAuthorByFullNameForCreate(authorFirstName string, autho
 func (r *Repository) CreateAuthor(author *model.Author) error {
 	return r.db.Create(&author).Error
 }
+
+func (r *Repository) UpdateBook(book *model.Book) error {
+	//return r.db.Updates(&book).Error
+	return r.db.Model(&book).Updates(book).Error
+}
+
+func (r *Repository) GetBookById(id string) (*model.Book, error) {
+	var book model.Book
+	result := r.db.Where("id = ?", id).Preload("Author").First(&book)
+
+	log.Printf("Query result: %+v", result)
+
+	if result.Error != nil {
+		log.Printf("Query result: %+v", result)
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+	return &book, nil
+}
