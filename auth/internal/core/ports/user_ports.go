@@ -21,6 +21,11 @@ type UserService interface {
 	Register(register *model.RegisterRequest) error
 	Login(login *model.AuthRequest) (model.AuthResponse, error)
 	Profile(token *jwt.Token) (model.ProfileResponse, error)
+	SendEmail(sm *model.EmailMessage) (bool, error)
+}
+
+type MessagingPort interface {
+	PublishMessage(queueName string, message string) error
 }
 
 type UserServer interface {

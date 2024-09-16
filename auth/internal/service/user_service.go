@@ -23,6 +23,7 @@ func (s *UserService) Register(register *model.RegisterRequest) error {
 	}
 
 	var err error
+
 	existingUser, err := s.userRepository.FindByEmail(register.Email)
 	if err == nil && existingUser != nil {
 		return errors.New("user already exists")
@@ -43,6 +44,17 @@ func (s *UserService) Register(register *model.RegisterRequest) error {
 	if err != nil {
 		return err
 	}
+
+	message := model.EmailMessage{
+		Email:   userNew.Email,
+		Message: "Create your email in api!",
+	}
+
+	_, err = s.SendEmail(&message)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -84,4 +96,12 @@ func (s *UserService) Profile(token *jwt.Token) (model.ProfileResponse, error) {
 		//Token: string(claims),
 	}
 	return *user, nil
+}
+
+func (s *UserService) SendEmail(sm *model.EmailMessage) (bool, error) {
+	err := s.message.PublishMessage("emailQueue", sm.Message)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
