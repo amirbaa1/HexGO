@@ -25,6 +25,11 @@ func main() {
 
 	log.Println("Connected to RabbitMQ")
 
+	err = rabbitMQClient.CreateQueueDeclare("emailQueue", true, false)
+	if err != nil {
+		log.Fatalf("Failed to create queue: %v", err)
+	}
+
 	db := server1.GetDB()
 	userRepo := repository.NewRepository(db)
 

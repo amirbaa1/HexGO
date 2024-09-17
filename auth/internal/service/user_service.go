@@ -3,6 +3,7 @@ package service
 import (
 	"auth/internal/core/model"
 	"auth/internal/helper"
+	"encoding/json"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -49,8 +50,12 @@ func (s *UserService) Register(register *model.RegisterRequest) error {
 		Email:   userNew.Email,
 		Message: "Create your email in api!",
 	}
+	jsonMessage, err := json.Marshal(message)
+	if err != nil {
+		return errors.New("failed to marshal email message: " + err.Error())
+	}
 
-	_, err = s.SendEmail(&message)
+	_, err = s.SendEmail(string(jsonMessage))
 	if err != nil {
 		return err
 	}
@@ -98,8 +103,8 @@ func (s *UserService) Profile(token *jwt.Token) (model.ProfileResponse, error) {
 	return *user, nil
 }
 
-func (s *UserService) SendEmail(sm *model.EmailMessage) (bool, error) {
-	err := s.message.PublishMessage("emailQueue", sm.Message)
+func (s *UserService) SendEmail(message string) (bool, error) {
+	err := s.message.PublishMessage("emailQueue", message)
 	if err != nil {
 		return false, err
 	}

@@ -1,18 +1,15 @@
 package service
 
-import (
-	"notfi/cmd/server"
-	"notfi/internal/core/ports"
-)
+import "notfi/internal/core/ports"
 
 type Service struct {
-	rabbitMQClient server.RabbitMQClient
+	message ports.MessagingPort
 }
 
 var _ ports.NotfiService = (*Service)(nil)
 
-func NewNotfiService(rabbitMQClient server.RabbitMQClient) *Service {
+func NewService(message ports.MessagingPort) *Service {
 	return &Service{
-		rabbitMQClient: rabbitMQClient,
+		message: message,
 	}
 }

@@ -1,18 +1,38 @@
 package service
 
 import (
+	"encoding/json"
 	"log"
+	"notfi/internal/core/model"
+	"notfi/internal/helper"
 )
 
-func (s *Service) SendEmail() (bool, error) {
-	queueName := "emailQueue"
+func (s *Service) SendEmail(message string) (bool, error) {
 
-	messages, err := s.rabbitMQClient.ConsumeMessages(queueName)
+	log.Printf("Sending email with message: %s", message)
+
+	var emailMessage model.SendMessageEmail
+	err := json.Unmarshal([]byte(message), &emailMessage)
 	if err != nil {
-		return false, nil
+		return false, err
 	}
-	for message := range messages {
-		log.Println("[notfi] notfi service is running:", message.Body)
+	configEm := model.EmailConfig{
+		UserName:        "amir.2002.ba@gmail.com",
+		Password:        "151D8F621B3D1D8B104A6D386DA5C664DCCE",
+		Server:          "smtp.elasticemail.com",
+		To:              emailMessage.Email,
+		Subject:         "Create Account",
+		From:            "amir.2002.ba@gmail.com",
+		BodyHtml:        emailMessage.Message,
+		BodyText:        emailMessage.Message,
+		IsTransactional: true,
 	}
+	err = helper.SendElasticEmail(configEm)
+	if err != nil {
+		log.Printf("Failed to send email: %v", err)
+		return false, err
+	}
+	log.Println("---->Email sent to recipient with the following message:", emailMessage.Email)
+
 	return true, nil
 }
