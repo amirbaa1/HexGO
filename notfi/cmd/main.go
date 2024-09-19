@@ -7,23 +7,6 @@ import (
 )
 
 func main() {
-	//conn, err := server.ConnectRabbit()
-	//if err != nil {
-	//	log.Fatalf("Failed to connect to RabbitMQ: %v", err)
-	//}
-	//defer conn.Close()
-	//
-	//rabbitMQClient, err := server.NewRabbitMQ(conn)
-	//if err != nil {
-	//	log.Fatalf("Failed to create RabbitMQ client: %v", err)
-	//}
-	//defer rabbitMQClient.Close()
-	//
-	////repository1 := repository.NewRepositoryNotfi(rabbitMQClient)
-	//ss := service.NewService(rabbitMQClient)
-	//log.Println("Starting server", ss)
-	//
-	//log.Println("Connected to RabbitMQ")
 
 	conn, err := server.ConnectRabbit()
 	if err != nil {
