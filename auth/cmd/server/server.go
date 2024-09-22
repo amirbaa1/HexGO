@@ -4,8 +4,7 @@ import (
 	"auth/internal/core/ports"
 	"auth/middlewares"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"go.uber.org/zap"
 )
 
 type UserServer struct {
@@ -20,8 +19,10 @@ func NewServer(userHandler ports.UserHandler) *UserServer {
 
 func (s *UserServer) Initialize() {
 	app := fiber.New()
-	app.Use(logger.New())
+	//app.Use(logger.New())
+	logger, _ := zap.NewProduction()
 
+	defer logger.Sync()
 	v1 := app.Group("/v1")
 	jwtMiddleware := middlewares.AuthMiddleware(string("SECRET:)"))
 
@@ -32,6 +33,6 @@ func (s *UserServer) Initialize() {
 
 	err := app.Listen(":3000")
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err.Error())
 	}
 }
