@@ -1,10 +1,12 @@
 package server
 
 import (
-	"Notification/internal/service"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"log"
+
+	"Notification/internal/service"
 )
 
 func Internal() {

@@ -5,41 +5,22 @@ import (
 	"auth/internal/handler"
 	"auth/internal/repository"
 	"auth/internal/service"
-	"go.uber.org/zap"
+	"log"
 )
 
 func main() {
 
 	server1.Connect()
 
-	logger, _ := zap.NewProduction()
-
-	defer logger.Sync()
-
-	conn, err := server1.ConnectRabbit()
-
+	rabbitClient, err := server1.StartRabbitMQ()
 	if err != nil {
-		logger.Fatal("Failed to connect to RabbitMQ", zap.Error(err))
+		log.Fatalf("Failed to start RabbitMQ: %v", err)
 	}
-	defer conn.Close()
-
-	rabbitMQClient, err := server1.NewRabbitMQ(conn)
-	if err != nil {
-		logger.Fatal("Failed to create RabbitMQ client: %v", zap.Error(err))
-	}
-	defer rabbitMQClient.Close()
-
-	logger.Info("Connected to RabbitMQ")
-
-	err = rabbitMQClient.CreateQueueDeclare("emailQueue", true, false)
-	if err != nil {
-		logger.Fatal("Failed to create queue: %v", zap.Error(err))
-	}
-
+	
 	db := server1.GetDB()
 	userRepo := repository.NewRepository(db)
 
-	userService := service.NewUserService(userRepo, rabbitMQClient)
+	userService := service.NewUserService(userRepo, rabbitClient)
 	userHandler := handler.NewUserHandler(userService)
 
 	userServer := server1.NewServer(userHandler)

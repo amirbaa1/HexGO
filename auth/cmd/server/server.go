@@ -3,6 +3,8 @@ package server
 import (
 	"auth/internal/core/ports"
 	"auth/middlewares"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
@@ -35,4 +37,49 @@ func (s *UserServer) Initialize() {
 	if err != nil {
 		logger.Error(err.Error())
 	}
+}
+
+func StartRabbitMQ() (ports.MessagingPort, error) {
+	// conn, err := ConnectRabbit()
+
+	// if err != nil {
+	// 	log.Println("Failed to connect to RabbitMQ", zap.Error(err))
+	// }
+	// defer conn.Close()
+
+	// rabbitMQClient, err := NewRabbitMQ(conn)
+	// if err != nil {
+	// 	log.Println("Failed to create RabbitMQ client: %v", zap.Error(err))
+	// }
+	// defer rabbitMQClient.Close()
+
+	// log.Print("Connected to RabbitMQ")
+
+	// err = rabbitMQClient.CreateQueueDeclare("emailQueue", true, false)
+	// if err != nil {
+	// 	log.Print("Failed to create queue: %v", zap.Error(err))
+	// }
+
+	// select {}
+	conn, err := ConnectRabbit()
+	if err != nil {
+		log.Println("Failed to connect to RabbitMQ", err)
+		return nil, err
+	}
+
+	rabbitMQClient, err := NewRabbitMQ(conn)
+	if err != nil {
+		log.Printf("Failed to create RabbitMQ client: %v", err)
+		return nil, err
+	}
+
+	log.Print("Connected to RabbitMQ")
+
+	err = rabbitMQClient.CreateQueueDeclare("emailQueue", true, false)
+	if err != nil {
+		log.Printf("Failed to create queue: %v", zap.Error(err))
+		return nil, err
+	}
+
+	return rabbitMQClient, nil
 }
